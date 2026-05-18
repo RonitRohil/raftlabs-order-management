@@ -73,7 +73,7 @@ npm run db:seed
 npm run dev
 ```
 
-Runs at: http://localhost:8000
+Runs at: http://localhost:5000
 
 ### 3. Frontend
 
@@ -84,7 +84,7 @@ cd frontend
 npm install
 
 cp .env.example .env
-# Set: VITE_API_BASE_URL=http://localhost:8000/api
+# Set: VITE_API_BASE_URL=http://localhost:5000/api
 
 npm run dev
 ```

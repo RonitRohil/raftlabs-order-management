@@ -123,8 +123,8 @@ Running at: http://localhost:5000
 ```json
 {
   "customer_name": "Ronit Jain",
-  "customer_address": "123, MG Road, Bengaluru - 560001",
-  "customer_phone": "9876543210",
+  "customer_address": "97/A Gauri Vihar Extn",
+  "customer_phone": "7889979977",
   "items": [
     { "menu_item_id": 1, "quantity": 2 }
   ]
