@@ -4,42 +4,48 @@ const apiResponse = require("../utils/apiResponse");
 const VALID_STATUSES = ["ORDER_RECEIVED", "PREPARING", "OUT_FOR_DELIVERY", "DELIVERED"];
 
 async function placeOrder(order_data) {
-	const { customer_name, customer_address, customer_phone, items } = order_data;
+	try {
+		const { customer_name, customer_address, customer_phone, items } = order_data;
 
-	const menu_item_ids = items.map((i) => i.menu_item_id);
+		const menu_item_ids = items.map((i) => i.menu_item_id);
 
-	const found_items = await db.menuItem.findMany({
-		where: { id: { in: menu_item_ids }, is_available: true },
-	});
+		const found_items = await db.menuItem.findMany({
+			where: { id: { in: menu_item_ids }, is_available: true },
+		});
 
-	if (found_items.length !== menu_item_ids.length) {
-		return apiResponse(0, 400, "One or more menu items are invalid or unavailable", null);
-	}
+		if (found_items.length !== menu_item_ids.length) {
+			return apiResponse(0, 400, "One or more menu items are invalid or unavailable", null);
+		}
 
-	const price_map = {};
-	found_items.forEach((item) => {
-		price_map[item.id] = item.price;
-	});
+		const price_map = {};
+		found_items.forEach((item) => {
+			price_map[item.id] = item.price;
+		});
 
-	const order = await db.order.create({
-		data: {
-			customer_name,
-			customer_address,
-			customer_phone,
-			items: {
-				create: items.map((i) => ({
-					menu_item_id: i.menu_item_id,
-					quantity: i.quantity,
-					unit_price: price_map[i.menu_item_id],
-				})),
+		const order = await db.order.create({
+			data: {
+				customer_name,
+				customer_address,
+				customer_phone,
+				items: {
+					create: items.map((i) => ({
+						menu_item_id: i.menu_item_id,
+						quantity: i.quantity,
+						unit_price: price_map[i.menu_item_id],
+					})),
+				},
 			},
-		},
-		include: {
-			items: { include: { menu_item: true } },
-		},
-	});
+			include: {
+				items: { include: { menu_item: true } },
+			},
+		});
 
-	return apiResponse(1, 201, "Order placed successfully", { order });
+		return apiResponse(1, 201, "Order placed successfully", { order });
+	} 
+	
+	catch (err) {
+		throw err;
+	}
 }
 
 async function getOrderById(order_id) {

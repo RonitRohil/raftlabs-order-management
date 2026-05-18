@@ -8,7 +8,30 @@ http:
   url: "{{Host}}/api/orders"
   body:
     type: json
-    data: ""
+    data: |-
+      {
+          "customer_name": "Ronit Jain",
+          "customer_phone": "7014850582",
+          "customer_address": "97/A Gauri Vihar Extn., New Sanganer Road, Opp. Dhanwantri Hospital, Mansarover",
+          "items": [
+              {
+                  "menu_item_id": 8,
+                  "quantity": 1
+              },
+              {
+                  "menu_item_id": 7,
+                  "quantity": 1
+              },
+              {
+                  "menu_item_id": 2,
+                  "quantity": 1
+              },
+              {
+                  "menu_item_id": 1,
+                  "quantity": 2
+              }
+          ]
+      }
   auth: inherit
 
 settings:

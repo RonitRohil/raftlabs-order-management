@@ -6,6 +6,7 @@ import { useCart } from "../context/CartContext";
 
 export default function MenuPage() {
   const [menu_items, set_menu_items] = useState([]);
+  const [menu_count, set_menu_count] = useState(0);
   const [loading, set_loading] = useState(true);
   const [error, set_error] = useState(null);
   const [selected_category, set_selected_category] = useState("All");
@@ -15,7 +16,8 @@ export default function MenuPage() {
   useEffect(() => {
     getMenu()
       .then((res) => {
-        set_menu_items(res.data.result.menu_items);
+        set_menu_items(res.data.result.data);
+        set_menu_count(res.data.result.count);
         set_loading(false);
       })
       .catch(() => {
@@ -34,7 +36,12 @@ export default function MenuPage() {
     <div className="min-h-screen bg-brand-50">
       <header className="sticky top-0 z-20 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-brand-600">🍔 FoodieHub</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-brand-600">🍔 FoodieHub</h1>
+            {!loading && menu_count > 0 && (
+              <p className="text-xs text-gray-400 mt-0.5">{menu_count} items available</p>
+            )}
+          </div>
           {cart_count > 0 && (
             <button
               onClick={() => navigate("/cart")}

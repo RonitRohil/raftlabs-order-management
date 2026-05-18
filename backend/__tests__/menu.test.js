@@ -7,12 +7,13 @@ describe("GET /api/menu", () => {
         expect(res.status).toBe(200);
         expect(res.body.success).toBe(1);
         expect(res.body.message).toBe("Menu items fetched successfully");
-        expect(Array.isArray(res.body.result.menu_items)).toBe(true);
+        expect(Array.isArray(res.body.result.data)).toBe(true);
+        expect(typeof res.body.result.count).toBe("number");
     });
 
     it("should return items with required fields (id, name, description, price, image_url, category)", async () => {
         const res = await request(app).get("/api/menu");
-        const item = res.body.result.menu_items[0];
+        const item = res.body.result.data[0];
         ["id", "name", "description", "price", "image_url", "category"].forEach((field) => {
             expect(item).toHaveProperty(field);
         });
@@ -20,7 +21,7 @@ describe("GET /api/menu", () => {
 
     it("should only return items where is_available is true", async () => {
         const res = await request(app).get("/api/menu");
-        res.body.result.menu_items.forEach((item) => {
+        res.body.result.data.forEach((item) => {
             expect(item.is_available).toBe(true);
         });
     });
