@@ -4,12 +4,12 @@ A food delivery order management feature built as a full-stack application.
 
 ## Project Structure
 
-\`\`\`
+```
 raftlabs-order-management/
 ├── backend/      → Node.js + Express REST API
 ├── frontend/     → React + Vite SPA
 └── README.md
-\`\`\`
+```
 
 ## Tech Stack
 
@@ -24,19 +24,18 @@ raftlabs-order-management/
 
 ## Quick Start
 
-\`\`\`bash
+```bash
 # Backend
 cd backend && npm install && npm run dev
 
 # Frontend (new terminal)
 cd frontend && npm install && npm run dev
-\`\`\`
+```
 
 ## Live Demo
 
 - Frontend: [deployed-url]
 - API Base: [api-url]/api
-\`\`\`
 
 ### 0.4 Initial Commit
 

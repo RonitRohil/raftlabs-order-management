@@ -1,0 +1,19 @@
+info:
+  name: Get Order Status Stream
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: "{{Host}}/api/orders/:id/stream"
+  params:
+    - name: id
+      value: "1"
+      type: path
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
