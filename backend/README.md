@@ -103,7 +103,7 @@ npm run dev    # nodemon, auto-reloads on changes
 npm start      # plain node for production
 ```
 
-Running at: http://localhost:8000
+Running at: http://localhost:5000
 
 ---
 

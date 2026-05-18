@@ -59,7 +59,7 @@ npm install
 
 cp .env.example .env
 # For local backend:
-#   VITE_API_BASE_URL=http://localhost:8000/api
+#   VITE_API_BASE_URL=http://localhost:5000/api
 #
 # For deployed backend:
 #   VITE_API_BASE_URL=https://raftlabs-order-management-1rzy.onrender.com/api
