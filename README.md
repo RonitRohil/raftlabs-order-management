@@ -1,54 +1,54 @@
-# RaftLabs — Order Management System
+# RaftLabs order management
 
-A full-stack food delivery order management application built as a job assignment. The system lets customers browse a menu, add items to a cart, place an order, and watch their order status update in real time — all without polling, using Server-Sent Events (SSE).
+Full-stack food delivery app for a job assignment. Browse a menu, cart items, place an order, watch the status update live via SSE.
 
-**Live Demo:**
+**Live links:**
 - Frontend: https://raftlabs-order-management-dusky.vercel.app
-- Backend API: https://raftlabs-order-management-1rzy.onrender.com/api
-- Health Check: https://raftlabs-order-management-1rzy.onrender.com/health
+- API: https://raftlabs-order-management-1rzy.onrender.com/api
+- Health: https://raftlabs-order-management-1rzy.onrender.com/health
 
-> **Note:** The backend runs on Render's free tier, which spins down after 15 minutes of inactivity. The first request after idle may take up to 30 seconds. Open the health check URL a minute before demoing to warm it up.
+> Render's free tier spins down after 15 min idle. First request after that takes ~30 seconds. Hit the health URL before a demo to wake it up.
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 raftlabs-order-management/
 ├── backend/          → Node.js + Express 5 REST API
-│   ├── src/          → Application source code
-│   ├── prisma/       → Prisma schema and seed script
-│   └── __tests__/    → Jest + Supertest API tests
+│   ├── src/          → source files
+│   ├── prisma/       → schema and seed
+│   └── __tests__/    → Jest + Supertest
 ├── frontend/         → React + Vite SPA
-│   ├── src/          → Application source code
-│   └── __tests__/    → Jest + React Testing Library component tests
+│   ├── src/          → source files
+│   └── __tests__/    → Jest + React Testing Library
 └── README.md
 ```
 
 ---
 
-## Tech Stack
+## Tech stack
 
-| Layer      | Technology                                         |
-|------------|----------------------------------------------------|
-| Frontend   | React 19, Vite, Tailwind CSS, React Router v7      |
-| Backend    | Node.js, Express 5, CommonJS                       |
-| Database   | PostgreSQL via Prisma ORM + Neon (serverless)      |
-| Real-time  | Server-Sent Events (SSE)                           |
-| Validation | Zod (backend schema validation)                    |
-| Testing    | Jest + Supertest (API), Jest + React Testing Library (UI) |
-| Deploy     | Vercel (frontend), Render (backend), Neon (DB)     |
+| Layer      | Technology |
+|------------|------------|
+| Frontend   | React 19, Vite, Tailwind CSS, React Router v7 |
+| Backend    | Node.js, Express 5, CommonJS |
+| Database   | PostgreSQL via Prisma ORM + Neon |
+| Real-time  | Server-Sent Events (SSE) |
+| Validation | Zod |
+| Testing    | Jest + Supertest (API), Jest + RTL (UI) |
+| Deploy     | Vercel (frontend), Render (backend), Neon (DB) |
 
 ---
 
-## Local Setup
+## Local setup
 
 ### Prerequisites
 
 - Node.js 18+
-- A free [Neon](https://neon.tech) account for the PostgreSQL database
+- A free [Neon](https://neon.tech) account for the database
 
-### 1. Clone the repository
+### 1. Clone
 
 ```bash
 git clone https://github.com/<your-username>/raftlabs-order-management.git
@@ -59,233 +59,196 @@ cd raftlabs-order-management
 
 ```bash
 cd backend
-
-# Install dependencies
 npm install
 
-# Configure environment
 cp .env.example .env
-# Open .env and fill in:
-#   DATABASE_URL  → your Neon connection string
-#   FRONTEND_URL  → http://localhost:5173 (for local dev)
+# Fill in:
+#   DATABASE_URL  → Neon connection string
+#   FRONTEND_URL  → http://localhost:5173
 
-# Push schema to the database and generate Prisma client
 npx prisma generate
 npx prisma db push
-
-# Seed the menu with 8 items
 npm run db:seed
 
-# Start the dev server (runs on port 8000)
 npm run dev
 ```
 
-Backend is now live at: http://localhost:8000
+Runs at: http://localhost:8000
 
 ### 3. Frontend
 
-Open a new terminal:
+New terminal:
 
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
 
-# Configure environment
 cp .env.example .env
-# Open .env and set:
-#   VITE_API_BASE_URL=http://localhost:8000/api
+# Set: VITE_API_BASE_URL=http://localhost:8000/api
 
-# Start the dev server (runs on port 5173)
 npm run dev
 ```
 
-Frontend is now live at: http://localhost:5173
+Runs at: http://localhost:5173
 
 ---
 
-## Running Tests
-
-### Backend tests (Jest + Supertest)
+## Running tests
 
 ```bash
-cd backend
-npm test
-```
+# Backend — needs DATABASE_URL set in backend/.env
+cd backend && npm test
 
-Tests hit the real database, so `DATABASE_URL` must be set in `backend/.env` before running.
-
-### Frontend tests (Jest + React Testing Library)
-
-```bash
-cd frontend
-npm test
+# Frontend — no backend needed
+cd frontend && npm test
 ```
 
 ---
 
 ## Deployment
 
-The app is deployed fully free using three services:
+Everything runs free across three services.
 
 ### Database — Neon
 
-- Create a free project at [neon.tech](https://neon.tech)
-- Copy the connection string (pooled) into `DATABASE_URL`
-- Neon provides serverless PostgreSQL with a 0.5 GB free tier — more than sufficient
+Sign up at [neon.tech](https://neon.tech), create a project, copy the pooled connection string. Free tier is 0.5 GB.
 
 ### Backend — Render
 
-1. Go to [render.com](https://render.com) → **New → Web Service**
-2. Connect the GitHub repo, set **Root Directory** to `backend`
-3. Set:
-   - **Build Command:** `npm install && npx prisma generate && npx prisma db push`
-   - **Start Command:** `npm start`
-   - **Instance Type:** Free
-4. Add environment variables:
+1. New > Web Service, connect the repo, root directory: `backend`
+2. Build command: `npm install && npx prisma generate && npx prisma db push`
+3. Start command: `npm start`
+4. Instance type: Free
+5. Environment variables:
    ```
-   DATABASE_URL=<neon connection string>
+   DATABASE_URL=<neon string>
    FRONTEND_URL=https://<your-vercel-url>.vercel.app
    NODE_ENV=production
    PORT=8000
    ```
-5. The server auto-seeds the database on first startup if the menu table is empty — no shell access required.
+
+The server seeds the database on first boot if the menu table is empty, so no shell access is needed.
 
 ### Frontend — Vercel
 
-1. Go to [vercel.com](https://vercel.com) → **New Project**
-2. Import the same GitHub repo, set **Root Directory** to `frontend`
-3. Vercel auto-detects Vite — no build command changes needed
-4. Add environment variable:
-   ```
-   VITE_API_BASE_URL=https://<your-render-url>.onrender.com/api
-   ```
-5. After deploying, go back to Render and update `FRONTEND_URL` to the Vercel URL to fix CORS.
+1. New Project, connect the same repo, root directory: `frontend`
+2. Vercel picks up Vite automatically
+3. Add: `VITE_API_BASE_URL=https://<render-url>.onrender.com/api`
+4. After deploying, go back to Render and update `FRONTEND_URL` to the Vercel URL — this is what fixes CORS.
 
-Every `git push` to `main` automatically redeploys both services.
+Both services redeploy on every push to `main`.
 
 ---
 
-## Assignment Requirements — Coverage Checklist
-
-This section maps every requirement from the assignment brief to how it was implemented.
+## Assignment requirements
 
 ### Architecture
 
-| Requirement | Implementation |
-|-------------|----------------|
-| 3-layer architecture: routes → controllers → models | `src/routes/routes.js` → `src/controllers/` → `src/models/` — no service layer |
-| Models own all DB queries and return the response envelope | `menuModel.js` and `orderModel.js` call Prisma and return `apiResponse(...)` directly |
-| Controllers only call the model and forward the response | Each controller is a thin wrapper: `const response = await model.fn(); res.status(response.status_code).json(response)` |
-| Business logic lives in models | Price snapshot, menu item availability check, order existence check — all in `orderModel.js` |
-| `index.js` = app factory only, `server.js` = entry point | `index.js` exports `app` with no `listen()`. `server.js` calls `dotenv.config()` then `app.listen()`. This separation makes Supertest work cleanly |
+| Requirement | How it's done |
+|-------------|---------------|
+| 3-layer pattern: routes > controllers > models | `routes/routes.js` calls controllers, controllers call models, models call Prisma. No service layer. |
+| Models own DB queries and return the envelope | `menuModel.js` and `orderModel.js` return `apiResponse(...)` directly |
+| Controllers are thin wrappers | Each one gets the response from the model and does `res.status(response.status_code).json(response)` |
+| Business logic in models | Price snapshot, item availability check, order existence check — all in `orderModel.js` |
+| `index.js` = app factory, `server.js` = entry point | `index.js` exports `app` with no `listen()`. `server.js` does `dotenv.config()` then `app.listen()`. Supertest needs this split to avoid port conflicts when importing `app` in tests. |
 
-### Response Envelope
+### Response envelope
 
-Every endpoint returns exactly:
+Every endpoint returns:
 ```json
 { "success": 1, "status_code": 200, "message": "...", "result": {} }
 ```
-The `apiResponse()` utility in `src/utils/apiResponse.js` enforces this shape — no raw responses anywhere.
+The `apiResponse()` utility in `src/utils/apiResponse.js` builds this — no raw responses anywhere.
 
-### API Endpoints
+### API endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | /health | Health check |
-| GET | /api/menu | All available menu items (ordered by category, includes count) |
+| GET | /api/menu | Available items ordered by category, with count |
 | POST | /api/orders | Place a new order (Zod validated) |
-| GET | /api/orders/:id | Get order by ID with nested items and menu details |
-| PATCH | /api/orders/:id/status | Update order status (validates enum) |
-| GET | /api/orders/:id/stream | SSE real-time order status stream |
+| GET | /api/orders/:id | Order by ID with nested items |
+| PATCH | /api/orders/:id/status | Update order status |
+| GET | /api/orders/:id/stream | SSE real-time status stream |
 
 ### Validation
 
-- **Backend:** Zod schema (`PlaceOrderSchema`) validates `customer_name` (min 2 chars), `customer_address` (min 5 chars), `customer_phone` (Indian 10-digit regex `/^[6-9]\d{9}$/`), and `items` (non-empty array, each with positive `menu_item_id` and `quantity >= 1`).
-- **Frontend:** Client-side form validation on the Cart page before the API call, with field-level error messages.
-- **Controller-level:** `parseInt(req.params.id)` + `isNaN` check on all routes that take an order ID, returning 400 immediately.
+Backend uses Zod (`PlaceOrderSchema`) to validate the order body: name (min 2 chars), address (min 5 chars), phone (Indian 10-digit regex `/^[6-9]\d{9}$/`), items (non-empty, each with positive `menu_item_id` and `quantity >= 1`).
 
-### Price Snapshot
+Controllers do `parseInt(req.params.id)` + `isNaN` check immediately, returning 400 before anything else runs.
 
-When an order is placed, `unit_price` is copied from the menu item at that moment and stored on each `OrderItem` row. Future price changes to `MenuItem` do not affect historical orders.
+The checkout form on the frontend re-runs the same phone regex client-side and shows per-field errors before the request even goes out.
 
-### Real-time Updates (SSE)
+### Price snapshot
 
-The `GET /api/orders/:id/stream` endpoint:
-1. Verifies the order exists before opening the stream
-2. Sets SSE headers (`Content-Type: text/event-stream`, `Cache-Control: no-cache`, `Connection: keep-alive`)
-3. Immediately emits `ORDER_RECEIVED`
-4. Advances through `PREPARING → OUT_FOR_DELIVERY → DELIVERED` every 10 seconds, updating the DB at each step
-5. Closes the stream 1 second after `DELIVERED`
-6. Clears the interval on `req.on("close")` to prevent memory leaks when the client disconnects
+`unit_price` is copied from the menu item at order creation time and stored on each `OrderItem` row. If a menu price changes later, existing orders are unaffected.
 
-The frontend `useOrderStream` hook manages the `EventSource` lifecycle, closes it on `DELIVERED`, and cleans up on component unmount.
+### Real-time updates (SSE)
 
-### Error Handling
+`GET /api/orders/:id/stream` verifies the order exists, sets SSE headers, then immediately sends `ORDER_RECEIVED`. Every 10 seconds it advances to the next status, writes it to the DB, and pushes the event. Closes 1 second after `DELIVERED`. The interval is cleared on `req.on("close")` so a client disconnecting mid-stream doesn't leave a zombie process running.
 
-- Zod validation errors → `400` with joined field messages
-- Prisma P2025 (record not found) → `404`
-- All other errors → `500`
-- Central `errorHandler.js` middleware is the single place all errors flow through
-- Every controller wraps its logic in `try/catch → next(err)`
+The `useOrderStream` hook closes the `EventSource` when `DELIVERED` arrives and again on component unmount.
+
+### Error handling
+
+Zod errors go to 400 with the joined field messages. Prisma P2025 goes to 404. Everything else goes to 500. All of this runs through a single `errorHandler.js` middleware so there's no scattered error logic.
 
 ### Database
 
-- **Schema:** `MenuItem`, `Order`, `OrderItem` models with an `OrderStatus` enum
-- **Seed:** 8 menu items across 5 categories (Pizza ×2, Burger ×2, Starters ×2, Pasta ×1, Desserts ×1) with realistic Indian pricing (₹99–₹399)
-- **Prisma singleton:** `global.db` pattern in `dbHelper.js` prevents connection pool exhaustion during hot-reload in development
+Three models (`MenuItem`, `Order`, `OrderItem`) and one enum (`OrderStatus`). Seed has 8 items across Pizza, Burger, Starters, Pasta, and Desserts, all priced between ₹99 and ₹399.
+
+`dbHelper.js` uses the `global.db` singleton pattern to avoid opening a new Prisma connection on every hot-reload during dev.
 
 ### Frontend
 
-| Requirement | Implementation |
-|-------------|----------------|
-| Menu browser | `MenuPage` — fetches items, category filter pills, responsive 4-column grid |
-| Cart management | `CartContext` — `add_to_cart`, `remove_from_cart`, `update_quantity`, `clear_cart` with `useCallback`; `cart_total` and `cart_count` derived (not extra state) |
-| Checkout | `CartPage` — two-panel layout, form validation, calls `POST /api/orders`, redirects to order tracking |
-| Order tracking | `OrderPage` + `useOrderStream` + `OrderStatusTracker` — live SSE stream, animated progress bar |
-| State management | React Context API only — no Redux, no Zustand |
+| Requirement | How it's done |
+|-------------|---------------|
+| Menu browser | `MenuPage` fetches items, shows category filter pills, renders a responsive grid |
+| Cart management | `CartContext` with `add_to_cart`, `remove_from_cart`, `update_quantity`, `clear_cart`. `cart_total` and `cart_count` derive from the cart array — not stored as separate state |
+| Checkout | `CartPage` shows cart items on the left, delivery form on the right. Validates, calls `POST /api/orders`, redirects to the order page |
+| Order tracking | `OrderPage` uses `useOrderStream` and `OrderStatusTracker` to show live status via SSE |
+| State management | React Context API only |
 | HTTP client | Axios with 10s timeout |
 
 ### Testing
 
-**Backend (`backend/__tests__/`):**
-- `menu.test.js` — 3 tests: 200 response, required fields present, only available items returned, count field present
-- `orders.test.js` — 12 tests covering POST (success + 5 validation failures), GET (success + 404 + 400 for non-numeric ID), PATCH (3 status updates + invalid status + 404)
+Backend (`backend/__tests__/`):
+- `menu.test.js` — 3 tests: response shape, required fields, only available items returned, count field
+- `orders.test.js` — 12 tests: place order success + unit_price snapshot, 5 validation failures, GET by ID (success / 404 / 400 for non-numeric ID), PATCH status (3 valid transitions / invalid value / 404)
 
-**Frontend (`frontend/__tests__/`):**
-- `MenuCard.test.jsx` — renders name/price/category/description, Add to Cart button state changes
-- `CartItem.test.jsx` — renders item details, quantity display, all control buttons present
-- `OrderStatusTracker.test.jsx` — all 4 steps render, completion message conditional on `is_complete`
+Frontend (`frontend/__tests__/`):
+- `MenuCard.test.jsx` — renders name, price, category, description; button state changes on click
+- `CartItem.test.jsx` — renders item details, quantity, line total, all three controls
+- `OrderStatusTracker.test.jsx` — all 4 steps render; completion message tied to `is_complete`
 
 ---
 
-## Design Decisions & Thoughts
+## Design decisions
 
-### Why SSE instead of WebSockets?
+### SSE, not WebSockets
 
-The order status flow is one-directional — the server pushes updates to the client, the client never needs to send anything back. SSE is the right tool here: it's simpler (plain HTTP, no upgrade handshake), works through standard load balancers and CDNs without special configuration, and browsers handle reconnection natively. WebSockets would be over-engineering for a read-only stream.
+Order status is one-way. The server pushes, the client reads, there's nothing to send back. SSE is plain HTTP, needs no upgrade handshake, and works through standard proxies without any special config. WebSockets would be the wrong call here.
 
-### Why Prisma over raw SQL or Knex?
+### Prisma over raw SQL
 
-Prisma's schema-first approach means the `schema.prisma` file is the single source of truth for the DB structure — no migration files to maintain for a project this size, `db push` is enough. The generated client gives full TypeScript-style autocomplete even in JavaScript files via JSDoc. The main tradeoff is the Prisma binary size adds ~30 MB to the deployment, acceptable here.
+The `schema.prisma` file is the only place the database structure lives. For a project this size, `db push` is simpler than managing migration files. The generated client gives autocomplete and catches typos at write time even in plain JS. The tradeoff is ~30 MB of binary added to the deploy, which is fine.
 
-### Why Neon for the database?
+### Neon for the database
 
-Neon is serverless Postgres — it scales to zero when idle (critical for a free-tier deployment) and the connection string works with Prisma out of the box. The pooled connection mode handles the serverless cold-start connection spikes well.
+Serverless Postgres that scales to zero when idle. That matters when the backend is on a free tier that also sleeps. The pooled connection mode handles cold-start connection spikes without any extra config.
 
-### Why Render for the backend instead of Railway?
+### Render over Railway
 
-Railway changed its free tier to be very limited. Render's free tier gives 750 instance hours per month with automatic deploys from GitHub, which is enough for demo and assignment purposes. The main limitation is the spin-down after 15 minutes idle, which is acceptable here.
+Railway's free tier got cut significantly in 2024. Render gives 750 instance hours per month with Git-connected autodeploys. The 15-minute spin-down is annoying for demos but workable for an assignment submission.
 
-### index.js vs server.js separation
+### `index.js` vs `server.js`
 
-This is the most important architectural decision for testability. When Supertest imports `app` from `index.js`, it starts the Express app without binding to a port — Supertest creates its own ephemeral server. If `app.listen()` were in `index.js`, every test file import would attempt to bind port 8000, causing conflicts. This separation is intentional and critical.
+If `app.listen()` were in `index.js`, every Supertest import would try to bind port 8000 and tests would start conflicting with each other. Keeping `listen()` only in `server.js` means Supertest can import `app` and spin up its own ephemeral server cleanly. It's one of those things that seems overly pedantic until your test suite breaks.
 
-### Price snapshot on order creation
+### Price snapshot
 
-Storing `unit_price` on `OrderItem` at order time rather than joining to `MenuItem.price` at query time is essential for correctness. If a menu item's price changes after an order is placed, the order history should still show what the customer was actually charged. This is standard e-commerce practice.
+`unit_price` is stored on `OrderItem` at creation time rather than joining to the current `MenuItem.price`. If a price changes after an order is placed, the order history should still show what the customer was actually charged — joining live would silently corrupt historical data.
 
-### Cart state as derived values
+### Derived cart totals
 
-`cart_total` and `cart_count` in `CartContext` are computed from the `cart` array on every render, not stored as separate `useState` values. This avoids the classic bug where state can go out of sync — there is one source of truth (the `cart` array) and everything else derives from it.
+`cart_total` and `cart_count` compute from the `cart` array on each render instead of being stored as separate state. Keeping multiple state values in sync is a common way to introduce bugs. One array, everything else derives from it.
