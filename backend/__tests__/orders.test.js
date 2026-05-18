@@ -5,7 +5,7 @@ let valid_menu_item_id;
 
 beforeAll(async () => {
     const menu_res = await request(app).get("/api/menu");
-    valid_menu_item_id = menu_res.body.result.menu_items[0].id;
+    valid_menu_item_id = menu_res.body.result.data[0].id;
 });
 
 const valid_payload = () => ({
